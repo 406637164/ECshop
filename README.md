@@ -1,19 +1,47 @@
                                                                     歡迎來到電商平台
 此案例示範如何透過Vue.js + Spring boot 進行電商平台開發
 
+
+開發技術
+前端
+Vue 3
+Vue Router
+Axios
+🖥後端
+Spring Boot
+JDBC Template / DAO 模式
+Maven
+Java 17+
+RESTful API
+啟動方式
+啟動後端
+bash
+cd ECShop
+./mvnw spring-boot:run
+預設後端埠口為 http://localhost:8080
+
  專案結構
 前端
 
 ECShop_frontend/
-├── public/
+├── public/index
+
 ├── src/
+
 │   ├── assets/         → 圖片、樣式等資源
+
 │   ├── components/     → Vue 可重用元件
+
 │   ├── router/         → Vue Router 設定
+
 │   ├── views/          → 頁面元件 (如：Login、Register、Product)
+
 │   ├── API.js          → API 請求設定
+
 │   ├── App.vue         → 主元件
+
 │   └── main.js         → Vue 進入點
+
 
 
 
@@ -22,6 +50,8 @@ ECShop_frontend/
 
 1️⃣ Controller 層（控制器）
 負責處理前端送來的 HTTP 請求，並將請求委託給 Service 層處理。
+
+
 
 📁 controller/
 
@@ -62,6 +92,8 @@ JwtFilter：JWT 驗證與過濾器設定
 SecurityConfig：Spring Security 設定，用於登入驗證與路由保護
 WebConfig：CORS 設定等
 
+
+
 Frontend (Vue)
      ↓
 HTTP Request (e.g., /api/products)
@@ -88,23 +120,6 @@ RowMapper（ProductRowMapper）
 
 支援 CORS，可與前端 Vue 進行跨網域請求。
 
-開發技術
-前端
-Vue 3
-Vue Router
-Axios
-🖥後端
-Spring Boot
-JDBC Template / DAO 模式
-Maven
-Java 17+
-RESTful API
-啟動方式
-啟動後端
-bash
-cd ECShop
-./mvnw spring-boot:run
-預設後端埠口為 http://localhost:8080
 
 啟動前端
 bash
