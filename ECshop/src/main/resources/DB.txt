@@ -1,0 +1,145 @@
+-- 建立 Product 商品表
+CREATE TABLE Product (
+                         ProductID VARCHAR(10) PRIMARY KEY,
+                         ProductName VARCHAR(100),
+                         Price INT,
+                         Quantity INT
+);
+
+-- 插入 Product 商品資料
+INSERT INTO Product (ProductID, ProductName, Price, Quantity) VALUES
+                                                                  ('P001', 'osii 舒壓按摩椅', 98000, 5),
+                                                                  ('P002', '網友最愛起司蛋糕', 1200, 50),
+                                                                  ('P003', '真愛密碼項鍊', 8500, 20);
+
+
+-- 建立 Order 訂單表
+CREATE TABLE `Order` (
+                         OrderID VARCHAR(20) PRIMARY KEY,
+                         MemberID VARCHAR(20),
+                         Price INT,
+                         PayStatus TINYINT -- 0: 未付款, 1: 已付款
+);
+
+-- 插入 Order 訂單資料
+INSERT INTO `Order` (OrderID, MemberID, Price, PayStatus) VALUES
+                                                              ('Ms20250801186230', '458', 98000, 1),
+                                                              ('Ms20250805157824', '55688', 9700, 0),
+                                                              ('Ms20250805258200', '1713', 2400, 1);
+
+
+-- 建立 OrderDetail 訂單明細表
+create table orderdetail
+(
+    OrderItemSN int auto_increment
+        primary key,
+    OrderID     varchar(20) null,
+    ProductID   varchar(10) null,
+    Quantity    int         null,
+    StandPrice  int         null,
+    ItemPrice   int         null,
+    constraint orderdetail_ibfk_1
+        foreign key (OrderID) references `order` (OrderID),
+    constraint orderdetail_ibfk_2
+        foreign key (ProductID) references product (ProductID)
+);
+create index OrderID
+    on orderdetail (OrderID);
+
+create index ProductID
+    on orderdetail (ProductID);
+
+-- 插入 OrderDetail 訂單明細資料
+INSERT INTO OrderDetail (OrderItemSN, OrderID, ProductID, Quantity, StandPrice, ItemPrice) VALUES
+                                                                                               (1, 'Ms20250801186230', 'P001', 1, 98000, 98000),
+                                                                                               (2, 'Ms20250805157824', 'P002', 1, 1200, 1200),
+                                                                                               (3, 'Ms20250805157824', 'P003', 1, 8500, 8500),
+                                                                                               (4, 'Ms20250805258200', 'P002', 2, 1200, 2400);
+
+create table users
+(
+    user_id       varchar(30)                         not null
+        primary key,
+    username      varchar(50)                         not null,
+    password      varchar(255)                        not null,
+    full_name     varchar(100)                        not null,
+    email         varchar(100)                        not null,
+    created_at    timestamp default CURRENT_TIMESTAMP null,
+    column_name   int                                 null,
+    column_name_2 int                                 null,
+    constraint email
+        unique (email),
+    constraint username
+        unique (username)
+);
+
+
+
+
+create
+    definer = root@localhost procedure GetProduct(IN productID varchar(50))
+BEGIN
+    DECLARE pid VARCHAR(50);
+    SET pid = COALESCE(productID, '');
+
+    IF pid = '' THEN
+        SELECT * FROM product WHERE Quantity>0;
+    ELSE
+        SELECT * FROM product WHERE productID = pid AND Quantity>0;
+    END IF;
+END;
+
+create
+    definer = root@localhost procedure GetUserOrders(IN in_user_id varchar(20))
+BEGIN
+    SELECT DISTINCT
+        `order`.OrderID,
+        `order`.MemberID,
+        `order`.Price,
+        `order`.PayStatus,
+        orderdetail.Quantity,
+        product.ProductName
+    FROM users
+             inner JOIN `order` ON users.user_id = `order`.MemberID
+             inner JOIN orderdetail ON `order`.OrderID = orderdetail.OrderID
+             inner JOIN product ON orderdetail.ProductID = product.ProductID
+    WHERE users.user_id = in_user_id ;
+END;
+
+
+
+create
+    definer = root@localhost procedure insertOrder(IN p_OrderID varchar(50), IN p_MemberID varchar(50),
+                                                   IN p_Price varchar(20), IN p_PayStatus varchar(20))
+BEGIN
+    INSERT INTO `order` (OrderID, MemberID, Price, PayStatus)
+    VALUES (p_OrderID, p_MemberID, p_Price, p_PayStatus);
+END;
+
+
+
+create
+    definer = root@localhost procedure insertOrderDetail(IN p_OrderID varchar(50), IN p_ProductID varchar(50),
+                                                         IN p_Quantity int, IN p_StandPrice decimal(10, 2),
+                                                         IN p_ItemPrice decimal(10, 2))
+BEGIN
+    INSERT INTO orderdetail (OrderID, ProductID, Quantity, StandPrice, ItemPrice)
+    VALUES (p_OrderID, p_ProductID, p_Quantity, p_StandPrice, p_ItemPrice);
+END;
+
+
+
+
+create
+    definer = root@localhost procedure UpdateProductQuantityByOrderID(IN p_orderid varchar(30))
+BEGIN
+    UPDATE product p
+        JOIN (
+            SELECT b.ProductID, b.Quantity
+            FROM `order` a
+                     JOIN orderdetail b ON a.OrderID = b.OrderID
+            WHERE a.OrderID = p_orderid
+        ) AS x ON p.ProductID = x.ProductID
+    SET p.Quantity = p.Quantity - x.Quantity;
+END;
+
