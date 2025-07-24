@@ -48,6 +48,7 @@ export default {
         localStorage.setItem('token', token);
         localStorage.setItem('userID', userId);
         localStorage.setItem('groupID', groupId);
+        this.$root.currentGroupID = groupId;
 
         if (response.data && response.data.status === 200) {
           // ✅ 不需要再用 localStorage 儲存 token
@@ -55,7 +56,7 @@ export default {
           if(response.data.groupID=="1"){
             this.$router.push('/home'); // 導向首頁
           }else if(response.data.groupID=="2"){
-            this.$router.push('/product'); // 導向首頁
+            this.$router.push('/product');
           }
 
         } else {

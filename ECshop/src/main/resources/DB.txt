@@ -52,11 +52,11 @@ create index ProductID
 
 
 
-INSERT INTO OrderDetail (OrderItemSN, OrderID, ProductID, Quantity, StandPrice, ItemPrice) VALUES
-                                                                                               (1, 'Ms20250801186230', 'P001', 1, 98000, 98000),
-                                                                                               (2, 'Ms20250805157824', 'P002', 1, 1200, 1200),
-                                                                                               (3, 'Ms20250805157824', 'P003', 1, 8500, 8500),
-
+INSERT INTO ecshop.orderdetail (OrderItemSN, OrderID, ProductID, Quantity, StandPrice, ItemPrice) VALUES
+(1, 'Ms20250801186230', 'P001', 1, 98000, 98000),
+(2, 'Ms20250805157824', 'P002', 1, 1200, 1200),
+(3, 'Ms20250805157824', 'P003', 1, 8500, 8500),
+(4, 'Ms20250805258200', 'P002', 2, 1200, 2400);
 
 
 
@@ -93,7 +93,7 @@ BEGIN
 END;
 
 create
-    definer = root@localhost procedure GetUserOrders(IN in_user_id varchar(20))
+    definer = root@localhost procedure GetUserOrders(IN in_user_id int)
 BEGIN
     SELECT DISTINCT
         `order`.OrderID,
@@ -103,14 +103,16 @@ BEGIN
         orderdetail.Quantity,
         product.ProductName
     FROM users
-             inner JOIN `order` ON users.user_id = `order`.MemberID
-             inner JOIN orderdetail ON `order`.OrderID = orderdetail.OrderID
-             inner JOIN product ON orderdetail.ProductID = product.ProductID
-    WHERE users.user_id = in_user_id ;
+             INNER JOIN `order` ON users.user_id = `order`.MemberID
+             INNER JOIN orderdetail ON `order`.OrderID = orderdetail.OrderID
+             INNER JOIN product ON orderdetail.ProductID = product.ProductID
+    WHERE `order`.MemberID = in_user_id;
 END;
 
-create
-    definer = root@localhost procedure UpdateProductQuantityByOrderID(IN p_orderid varchar(30))
+
+
+CREATE
+    DEFINER = root@localhost PROCEDURE UpdateProductQuantityByOrderID(IN p_orderid VARCHAR(30))
 BEGIN
     UPDATE product p
         JOIN (
@@ -119,7 +121,8 @@ BEGIN
                      JOIN orderdetail b ON a.OrderID = b.OrderID
             WHERE a.OrderID = p_orderid
         ) AS x ON p.ProductID = x.ProductID
-    SET p.Quantity = p.Quantity - x.Quantity;
+    SET p.Quantity = p.Quantity - x.Quantity
+    WHERE p.ProductID = x.ProductID;
 END;
 
 create

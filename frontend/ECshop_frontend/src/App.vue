@@ -15,23 +15,30 @@
 </template>
 <script>
 export default {
+  data() {
+    return {
+      currentGroupID: localStorage.getItem("groupID"),
+    };
+  },
   computed: {
     isLoginPage() {
-      // 判斷目前路由名稱是否為 LoginView（需在 router 設定 name）
-
       return this.$route.name === 'LoginView' || this.$route.path === '/';
-      // 或改用路徑判斷：
-      // return this.$route.path === "/login";
     },
     groupID() {
-      console.error(localStorage.getItem("groupID"));
-      console.error(localStorage.getItem("groupID"));
-      console.error(localStorage.getItem("groupID"));
-      console.error(localStorage.getItem("groupID"));
-      console.error(localStorage.getItem("groupID"));
-      return localStorage.getItem("groupID");
+      return this.currentGroupID;
     }
   },
+  created() {
+    window.addEventListener("storage", this.syncGroupID);
+  },
+  methods: {
+    syncGroupID() {
+      this.currentGroupID = localStorage.getItem("groupID");
+    }
+  },
+  beforeUnmount() {
+    window.removeEventListener("storage", this.syncGroupID);
+  }
 };
 </script>
 
