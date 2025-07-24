@@ -5,7 +5,7 @@
 開發技術
 前端
 Vue 3
-Vue Router
+Vue Router	
 Axios
 🖥後端
 Spring Boot
@@ -121,31 +121,41 @@ JwtFilter：JWT 驗證與過濾器設定
 SecurityConfig：Spring Security 設定，用於登入驗證與路由保護
 WebConfig：CORS 設定等
 
-整體流程
-
+ 
 Frontend (Vue)
 
-     ↓
-HTTP Request (e.g., /api/products)
+    發送 HTTP Request
+    
+HTTP Request
 
-     ↓
+    (e.g. GET /api/products)
+    
 Controller（ProductController）
 
-     ↓
-Service（ProductService）
+     呼叫 Service
+     
+Service（ProductService）【商業邏輯處理層】
 
-     ↓
+     呼叫 DAO
+     
 DAO（ProductDao → ProductDaoImpl）
 
-     ↓
-DB（透過 JdbcTemplate 執行 SQL）
+     執行 SQL
+JdbcTemplate（Spring 提供的工具）
 
-     ↓
-RowMapper（ProductRowMapper）
+     查詢資料庫
+DB（MySQL、PostgreSQL、...）
 
-     ↓
-     
-回傳結果至 Controller → 前端
+    回傳查詢結果
+    
+RowMapper（ProductRowMapper） 將查詢結果映射為 Java 物件
+    
+     回傳 List<Product>
+DAO → Service → Controller
+
+      封裝回應
+   
+Vue 前端接收並呈現結果
 
 
 採用 Spring Boot 快速啟動與整合框架。
