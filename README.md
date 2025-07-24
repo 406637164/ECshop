@@ -12,13 +12,33 @@ Spring Boot
 JDBC Template / DAO 模式
 Maven
 Java 17+
-RESTful API
+RESTful API'
 啟動方式
-啟動後端
+
+
+啟動前端
+
 bash
+
+cd ECShop_frontend
+
+npm install
+
+npm run serve
+
+啟動後端
+
+bash
+
 cd ECShop
+
 ./mvnw spring-boot:run
+
 預設後端埠口為 http://localhost:8080
+
+
+預設前端埠口為 http://localhost:8081
+
 
  專案結構
 前端
@@ -51,6 +71,15 @@ ECShop_frontend/
 1️⃣ Controller 層（控制器）
 負責處理前端送來的 HTTP 請求，並將請求委託給 Service 層處理。
 
+
+
+
+前後端連接方式
+前端透過 Axios 呼叫後端 RESTful API，包含登入、註冊、商品查詢、購物車操作等功能。
+
+後端需設定 CORS（跨來源資源共享）支援，例如使用：
+java
+@CrossOrigin(origins = "http://localhost:8081")
 
 
 📁 controller/
@@ -92,7 +121,7 @@ JwtFilter：JWT 驗證與過濾器設定
 SecurityConfig：Spring Security 設定，用於登入驗證與路由保護
 WebConfig：CORS 設定等
 
-
+整體流程
 
 Frontend (Vue)
      ↓
@@ -119,17 +148,3 @@ RowMapper（ProductRowMapper）
 透過 DAO + RowMapper 實現 SQL 操作轉換。
 
 支援 CORS，可與前端 Vue 進行跨網域請求。
-
-
-啟動前端
-bash
-cd ECShop_frontend
-npm install
-npm run serve
-預設前端埠口為 http://localhost:8081
-前後端連接方式
-前端透過 Axios 呼叫後端 RESTful API，包含登入、註冊、商品查詢、購物車操作等功能。
-
-後端需設定 CORS（跨來源資源共享）支援，例如使用：
-java
-@CrossOrigin(origins = "http://localhost:8081")
