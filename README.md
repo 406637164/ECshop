@@ -124,20 +124,29 @@ WebConfig：CORS 設定等
 整體流程
 
 Frontend (Vue)
+
      ↓
 HTTP Request (e.g., /api/products)
+
      ↓
 Controller（ProductController）
+
      ↓
 Service（ProductService）
+
      ↓
 DAO（ProductDao → ProductDaoImpl）
+
      ↓
 DB（透過 JdbcTemplate 執行 SQL）
+
      ↓
 RowMapper（ProductRowMapper）
+
      ↓
+     
 回傳結果至 Controller → 前端
+
 
 採用 Spring Boot 快速啟動與整合框架。
 
