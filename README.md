@@ -13,8 +13,12 @@ JDBC Template / DAO 模式
 Maven
 Java 17+
 RESTful API'
-啟動方式
 
+schema 以及測試資料
+
+/src/main/resource/DB.txt
+
+啟動方式
 
 啟動前端
 
@@ -153,14 +157,14 @@ RowMapper（ProductRowMapper） 將查詢結果映射為 Java 物件
      回傳 List<Product>
 DAO → Service → Controller
 
-      封裝回應
    
 Vue 前端接收並呈現結果
-
 
 採用 Spring Boot 快速啟動與整合框架。
 
 分層明確，易於維護與擴充。
+
+
 
 後端使用 JWT 驗證機制。
 
